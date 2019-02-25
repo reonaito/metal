@@ -10,8 +10,8 @@ all: $(LIB) $(TARGET)
 	# Metal library (.metallib)
 	$(XC) metallib -o $@ /tmp/$<.air
 
-monte_carlo.metallib: Loki/Loki/*.metal monte_carlo.metal
-	$(XC) metal -c -Wall -Wextra -std=osx-metal2.0 -o /tmp/loki.air Loki/Loki/loki.metal
+monte_carlo.metallib: Loki/*.metal monte_carlo.metal
+	$(XC) metal -c -Wall -Wextra -std=osx-metal2.0 -o /tmp/loki.air Loki/loki.metal
 	$(XC) metal -c -Wall -Wextra -std=osx-metal2.0 -o /tmp/monte_carlo.air monte_carlo.metal
 	$(XC) metallib -o $@ /tmp/loki.air /tmp/monte_carlo.air
 
