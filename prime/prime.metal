@@ -2,16 +2,11 @@
 using namespace metal;
 
 kernel void prime(device const uint *primes [[ buffer(0) ]],
-                  constant uint &n_primes [[ buffer(1) ]],
-                  device bool *out [[ buffer(2) ]],
-                  uint id [[ thread_position_in_grid ]])
+                  device bool *out [[ buffer(1) ]],
+                  uint2 id [[ thread_position_in_grid ]])
 {
-  uint i = 0;
-  for (i=0; i<n_primes; i++) {
-    if (id % primes[i] == 0) {
-      out[id] = false;
+  if (id[0] % primes[id[1]] == 0) {
+      out[id[0]] = true;
       return;
     }
-  }
-  out[id] = true;
 }
