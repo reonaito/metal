@@ -61,11 +61,12 @@ for _ in 0 ..< cycle {
     commandEncoder.setComputePipelineState(computePipelineState)
     commandEncoder.setBuffer(primesBuffer, offset: 0, index: 0)
     commandEncoder.setBuffer(outBuffer, offset: 0, index: 1)
-    let threadPerGroup = MTLSize(width: 32, height: 32, depth: 1)
+    commandEncoder.setBytes(&n, length: MemoryLayout<UInt32>.stride, index: 2)
+    let threadPerGroup = MTLSize(width: 32, height: 1, depth: 1)
     let n_primes = n_primesBuffer.contents().load(as: UInt32.self)
     let numberOfThreadgroups = MTLSize(
-      width: (n + 31) / 32,
-      height: (Int(n_primes) + 31) / 32,
+      width: (Int(n_primes) + 31) / 32,
+      height: 1,
       depth: 1
     )
     commandEncoder.dispatchThreadgroups(numberOfThreadgroups, threadsPerThreadgroup: threadPerGroup)
@@ -104,7 +105,7 @@ for _ in 0 ..< cycle {
 // result
 let n_primes = n_primesBuffer.contents().load(as: UInt32.self)
 let primes = Array(UnsafeBufferPointer(
-  start: outBuffer.contents().bindMemory(
+  start: primesBuffer.contents().bindMemory(
     to: UInt32.self,
     capacity: Int(n_primes) * MemoryLayout<UInt32>.stride
   ),
