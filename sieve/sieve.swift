@@ -1,9 +1,9 @@
 import MetalKit
 
 // values
-let max_n = (1 << 26) + 1
+let max_n = (1 << 28) + 1
 let prime_buf_size = 20000000
-var init_primes:[UInt32] = [2, 3]
+var init_primes:[UInt32] = [3]
 var init_n_primes = init_primes.count
 var sqrt_n = 4
 var n = sqrt_n * sqrt_n
@@ -87,7 +87,7 @@ for _ in 0 ..< cycle {
     commandEncoder.setBytes(&n, length: MemoryLayout<UInt32>.stride, index: 3)
     let threadPerGroup = MTLSize(width: 32, height: 1, depth: 1)
     let numberOfThreadgroups = MTLSize(
-      width: (n + 31) / 32,
+      width: (n/2 + 31) / 32,
       height: 1,
       depth: 1
     )
@@ -114,4 +114,4 @@ let primes = Array(UnsafeBufferPointer(
 ))
 
 // print(primes)
-print(primes.count, sqrt_n)
+print(primes.count+1, sqrt_n)

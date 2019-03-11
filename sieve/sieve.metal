@@ -15,8 +15,9 @@ kernel void sieve(device const uint *primes [[ buffer(0) ]],
 {
   uint p = primes[id];
   if (p == 0) { return; }
-  uint k = p;
-  while (k < n) {
+  uint k = p / 2;
+  uint half_n = n / 2;
+  while (k < half_n) {
     out[k] = true;
     k = k + p;
   }
@@ -28,8 +29,8 @@ kernel void collect(device const bool *out [[ buffer(0) ]],
                     constant uint &n [[ buffer(3) ]],
                     uint id [[ thread_position_in_grid ]])
 {
-  if (!out[id] && id > 1 && id < n) {
+  if (!out[id] && id > 1 && id < n/2) {
     uint k = atomic_fetch_add_explicit(&n_primes, 1, memory_order_relaxed);
-    primes[k] = id;
+    primes[k] = id*2 + 1;
   }
 }
